@@ -4,11 +4,29 @@ import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
 import CarItem from "../components/UI/CarItem";
 import carData from "../assets/data/carData";
+import React, { useEffect, useState } from "react";
+import {Link} from "react-router-dom";
+import axios from 'axios'
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 
 const CarListing = () => {
+     const [users,setUsers] = useState([])
+
+    useEffect(()=>{
+        axios.get('http://localhost:3000')
+        .then(result => setUsers(result.data))
+        .catch(err => console.log(err))
+    }, [])
+  
   return (
-    <Helmet title="Cars">
+    <section>
+      <Helmet title="Cars">
       <CommonSection title="Car Listing" />
 
       <section>
@@ -27,14 +45,39 @@ const CarListing = () => {
                 </select>
               </div>
             </Col>
-
-            {carData.map((item) => (
-              <CarItem item={item.id} key={item.id} />
-            ))}
+           <></>
           </Row>
         </Container>
       </section>
     </Helmet>
+    </section>,
+    <section>
+      {
+        users.map((user) => { 
+          return <Card sx={{ maxWidth: 345 }}>
+                <CardMedia
+                  component="img"
+                  alt="green iguana"
+                  height="140"
+                  image=""
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+          
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                  {user.name}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+              <Button size="small">{ user.price}</Button>
+                </CardActions>
+              </Card>
+        })
+      }
+      
+    </section>
+    
   );
 };
 

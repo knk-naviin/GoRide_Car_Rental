@@ -24,7 +24,7 @@ app.get('/getUser/:id',(req,res) =>{
 
 app.put('/update/:id',(req,res)=>{
     const id= req.params.id;
-    UserModel.findByIdAndUpdate({_id:id},{name:req.body.name,email:req.body.email,age:req.body.age})
+    UserModel.findByIdAndUpdate({_id:id},{name:req.body.name,brand:req.body.brand,rating:req.body.rating,model:req.body.model,price:req.body.price,speed:req.body.speed,gps:req.body.gps,seatType:req.body.seatType,carType:req.body.carType,desc:req.body.desc})
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
