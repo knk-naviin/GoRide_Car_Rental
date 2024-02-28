@@ -10,6 +10,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { Grid } from "@mui/material";
 
 const CarListing = () => {
   return (
@@ -32,12 +33,11 @@ const CarListing = () => {
                 </select>
               </div>
             </Col>
-
             {carData.map((item) => (
               // <CarItem item={item.id} key={item.id} />
 
-
-              <Card sx={{ maxWidth: 345 }}>
+            
+               <Card sx={{ maxWidth: 345}}>
               <CardMedia
                 component="img"
                 alt="green iguana"
@@ -60,8 +60,8 @@ const CarListing = () => {
                 <Button size="small">Learn More</Button>
               </CardActions>
             </Card>
-
-            ))}
+     ))}
+     
           </Row>
         </Container>
       </section>
