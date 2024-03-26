@@ -33,6 +33,8 @@ const handleDelete =(id) =>{
                             <th>SeatType</th>
                             <th>CarType</th>
                             <th>Descprition</th>
+                            <th>Image</th>
+
 </tr>
                         
                     
@@ -51,6 +53,8 @@ const handleDelete =(id) =>{
                                      <td>{user.seatType}</td>
                                     <td>{user.carType}</td>
                                     <td>{user.desc}</td>
+                                    <td>{user.image}</td>
+
                                      <td>
                                          <Link to={`/update/${user._id}`} className="btn btn-success">Update</Link>
                                      <button className="btn btn-danger" onClick={(e)=>handleDelete(user._id)}>Delete</button>

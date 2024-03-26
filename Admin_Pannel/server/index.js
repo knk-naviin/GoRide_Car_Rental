@@ -1,7 +1,9 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const multer = require('multer');
 const cors = require('cors')
 const UserModel = require('./models/Users')
+const upload = multer({ dest: 'uploads/' });
 
 const app = express()
 app.use(cors())
@@ -24,7 +26,7 @@ app.get('/getUser/:id',(req,res) =>{
 
 app.put('/update/:id',(req,res)=>{
     const id= req.params.id;
-    UserModel.findByIdAndUpdate({_id:id},{name:req.body.name,brand:req.body.brand,rating:req.body.rating,model:req.body.model,price:req.body.price,speed:req.body.speed,gps:req.body.gps,seatType:req.body.seatType,carType:req.body.carType,desc:req.body.desc})
+    UserModel.findByIdAndUpdate({_id:id},{name:req.body.name,brand:req.body.brand,rating:req.body.rating,model:req.body.model,price:req.body.price,speed:req.body.speed,gps:req.body.gps,seatType:req.body.seatType,carType:req.body.carType,desc:req.body.desc,image:req.body.image})
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
@@ -36,11 +38,22 @@ app.delete('/deleteUser/:id',(req,res)=>{
     .catch(err =>res.json(err))
 })
 
-app.post("/createUser",(req,res)=>{
-    UserModel.create(req.body)
-    .then(users=>res.json(users))
-    .catch(err=>res.json(err))
-})
+// app.post("/createUser",(req,res)=>{
+//     UserModel.create(req.body)
+//     .then(users=>res.json(users))
+//     .catch(err=>res.json(err))
+// })
+app.post('/createUser', upload.single('image'), (req, res) => {
+    // Process the uploaded file or data here
+    const { name, brand, rating, model, price, speed, gps, seatType, carType, desc } = req.body;
+    const image = req.file ? req.file.path : null;
+
+    // Create new user with uploaded data
+    UserModel.create({ name, brand, rating, model, price, speed, gps, seatType, carType, desc, image })
+        .then(user => res.json(user))
+        .catch(err => res.status(500).json({ error: 'Error creating user', message: err.message }));
+});
+
 
 
 app.listen(3000, () => {

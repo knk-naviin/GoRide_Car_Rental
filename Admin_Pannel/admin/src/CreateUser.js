@@ -12,15 +12,39 @@ function CreateUsers() {
     const [seatType, setSeatType] = useState()
     const [carType, setCarType] = useState()
     const [desc, setDesc] = useState()
+    const [image, setImage] = useState()
 
-    
+    function convertToBase64(e) {
+      var reader = new FileReader();
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onload = () => {
+          setImage(reader.result);
+      };
+      reader.onerror = error => {
+          console.log("Error: ", error);
+      }; 
+  }
 
-    const Submit = (e) => {
-        e.preventDefault();
-        axios.post("http://localhost:3000/createUser",{name,brand,rating,model,price,speed,gps,seatType,carType,desc})
-        .then(result => console.log(result))
-        .catch(err=>console.log(err))
-    }
+  const Submit = (e) => {
+      e.preventDefault();
+      const imageData = image ? image.split(',')[1] : null;
+      axios.post("http://localhost:3000/createUser", {
+
+          name,
+          brand,
+          rating,
+          model,
+          price,
+          speed,
+          gps,
+          seatType,
+          carType,
+          desc,
+          image: imageData // Extracting base64 data without the data URL prefix
+      })
+      .then(result => console.log(result))
+      .catch(err => console.log(err))
+  }
 
     return (
         <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
@@ -67,6 +91,11 @@ function CreateUsers() {
         <label htmlFor="">Description</label>
         <input type="text" placeholder='Enter Descprition' className='form-control' onChange={(e) => setDesc(e.target.value)}/>
         </div>
+        <div className='mb-2'>
+                        <label htmlFor="">Image</label>
+                        <input accept="image" type="file" onChange={convertToBase64} className='form-control' />
+                        {image && <img width={100} height={100} src={image} alt="Selected Image" />}
+                    </div>
         <button className='btn btn-success'>Submit</button>
         </form>
         </div>
