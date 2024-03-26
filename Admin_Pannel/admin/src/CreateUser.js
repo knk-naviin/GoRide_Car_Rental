@@ -2,34 +2,33 @@ import React, { useState } from "react";
 import axios from 'axios'
 
 function CreateUsers() {
-    const [name,setName] = useState()
-    const [brand,setBrand] = useState()
-    const [rating, setRating] = useState()
-    const [model, setModel] = useState()
-    const [price, setPrice] = useState()
-    const [speed, setSpeed] = useState()
-    const [gps, setGps] = useState()
-    const [seatType, setSeatType] = useState()
-    const [carType, setCarType] = useState()
-    const [desc, setDesc] = useState()
-    const [image, setImage] = useState()
+  const [name, setName] = useState('');
+  const [brand, setBrand] = useState('');
+  const [rating, setRating] = useState('');
+  const [model, setModel] = useState('');
+  const [price, setPrice] = useState('');
+  const [speed, setSpeed] = useState('');
+  const [gps, setGps] = useState('');
+  const [seatType, setSeatType] = useState('');
+  const [carType, setCarType] = useState('');
+  const [desc, setDesc] = useState('');
+  const [image, setImage] = useState(null); // Change to null initially
 
-    function convertToBase64(e) {
-      var reader = new FileReader();
-      reader.readAsDataURL(e.target.files[0]);
+  const convertToBase64 = (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
       reader.onload = () => {
-          setImage(reader.result);
+          setImage(reader.result); // Store the base64 string in state
       };
-      reader.onerror = error => {
+      reader.onerror = (error) => {
           console.log("Error: ", error);
-      }; 
-  }
+      };
+  };
 
-  const Submit = (e) => {
+  const handleSubmit = (e) => {
       e.preventDefault();
-      const imageData = image ? image.split(',')[1] : null;
       axios.post("http://localhost:3000/createUser", {
-
           name,
           brand,
           rating,
@@ -40,16 +39,24 @@ function CreateUsers() {
           seatType,
           carType,
           desc,
-          image: imageData // Extracting base64 data without the data URL prefix
+          image: image // Send the base64 string directly without splitting
       })
-      .then(result => console.log(result))
-      .catch(err => console.log(err))
-  }
+      .then(result => {
+          console.log(result);
+          // Reset form fields or show success message
+      })
+      .catch(err => {
+          console.log(err);
+          // Handle error, show error message, etc.
+      });
+  };
+
+
 
     return (
         <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
         <div className='w-50 bg-white rounded p-3'>
-        <form onSubmit={Submit}>
+        <form onSubmit={handleSubmit}>
         <h2>Add User</h2>
         <div className='mb-2'>
         <label htmlFor="">Car Name</label>
@@ -93,7 +100,7 @@ function CreateUsers() {
         </div>
         <div className='mb-2'>
                         <label htmlFor="">Image</label>
-                        <input accept="image" type="file" onChange={convertToBase64} className='form-control' />
+                        <input accept="image/*" type="file" onChange={convertToBase64} className='form-control' />
                         {image && <img width={100} height={100} src={image} alt="Selected Image" />}
                     </div>
         <button className='btn btn-success'>Submit</button>
