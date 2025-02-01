@@ -1,42 +1,79 @@
 import React, { useState } from "react";
-import axios from 'axios'
+import axios from "axios";
 
-function CreateUsers() {
-    const [name,setName] = useState()
-    const [email,setEmail] = useState()
-    const [age,setAge] = useState()
+function CreateUser() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [age, setAge] = useState("");
+  const [image, setImage] = useState(null);
 
-    const Submit = (e) => {
-        e.preventDefault();
-        axios.post("http://localhost:3000/createUser",{name,email,age})
-        .then(result => console.log(result))
-        .catch(err=>console.log(err))
-    }
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-    return (
-        <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
-        <div className='w-50 bg-white rounded p-3'>
-        <form onSubmit={Submit}>
-        <h2>Add User</h2>
-        <div className='mb-2'>
-        <label htmlFor="">Name</label>
-        <input type="text" placeholder='Enter Name' className='form-control' onChange={(e) => setName(e.target.value)} />
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("age", age);
+    formData.append("image", image);
+
+    axios
+      .post("http://localhost:3000/createUser", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log("User created:", response.data);
+        // Handle success
+      })
+      .catch((error) => {
+        console.error("Error creating user:", error);
+      });
+  };
+
+  return (
+    <div className="container">
+      <h1>Create User</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Name:</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
         </div>
-        <div className='mb-2'>
-        <label htmlFor="">Email</label>
-        <input type="email" placeholder='Enter Email' className='form-control' onChange={(e) => setEmail(e.target.value)}/>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
-        <div className='mb-2'>
-        <label htmlFor="">Age</label>
-        <input type="text" placeholder='Enter Age' className='form-control' onChange={(e) => setAge(e.target.value)}/>
+        <div>
+          <label>Age:</label>
+          <input
+            type="number"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            required
+          />
         </div>
-        <button className='btn btn-success'>Submit</button>
-        </form>
+        <div>
+          <label>Image:</label>
+          <input
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
+            required
+          />
         </div>
-        </div>
-    )
+        <button type="submit">Create User</button>
+      </form>
+    </div>
+  );
 }
 
-export default CreateUsers;
-
-
+export default CreateUser;

@@ -39,9 +39,12 @@ const Footer = () => {
               </h1>
             </div>
             <p className="footer__logo-content">
-            Welcome to Go Ride Car Rental
-
-Embark on a seamless journey with Go Ride Car Rental, where convenience meets excellence. Whether you're planning a weekend getaway, a business trip, or just need a reliable ride for daily commuting, we have the perfect vehicle to suit your needs. Explore our extensive fleet of well-maintained cars and experience the freedom to go wherever your heart desires.
+              Welcome to Go Ride Car Rental Embark on a seamless journey with Go
+              Ride Car Rental, where convenience meets excellence. Whether
+              you're planning a weekend getaway, a business trip, or just need a
+              reliable ride for daily commuting, we have the perfect vehicle to
+              suit your needs. Explore our extensive fleet of well-maintained
+              cars and experience the freedom to go wherever your heart desires.
             </p>
           </Col>
 
@@ -61,7 +64,9 @@ Embark on a seamless journey with Go Ride Car Rental, where convenience meets ex
           <Col lg="3" md="4" sm="6">
             <div className="mb-4">
               <h5 className="footer__link-title mb-4">Go ride cabs</h5>
-              <p className="office__info">Near nehru college,Kuniyamuthur,Coimbatore,641008 </p>
+              <p className="office__info">
+                Near nehru college,Kuniyamuthur,Coimbatore,641008{" "}
+              </p>
               <p className="office__info">Phone: +91-9876543210</p>
               <p className="office__info">Email: goridecabs@gmail.com</p>
             </div>
