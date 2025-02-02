@@ -38,23 +38,17 @@ const addCar = async (req, res) => {
   }
 };
 
-// Get All Cars
-
-
+// Get All Cars with Sorting
 const getAllCars = async (req, res) => {
   try {
-    const { carType, seats, fuelType, transmissionType, sort } = req.query;
-    let query = {};
+    const { sortBy, order } = req.query;
+    const sortOptions = {};
+    if (sortBy) {
+      sortOptions[sortBy] = order === 'desc' ? -1 : 1;
+    }
 
-    if (carType) query.carType = carType;
-    if (seats) query.seats = seats;
-    if (fuelType) query.fuelType = fuelType;
-    if (transmissionType) query.transmissionType = transmissionType;
-
-    let cars = Car.find(query);
-    if (sort) cars = cars.sort({ rentPrice: sort === 'asc' ? 1 : -1 });
-
-    res.status(200).json(await cars);
+    const cars = await Car.find().sort(sortOptions);
+    res.status(200).json(cars);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 const carSchema = new mongoose.Schema({
   carName: { type: String, required: true },

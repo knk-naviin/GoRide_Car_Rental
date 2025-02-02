@@ -3,16 +3,16 @@ const router = express.Router();
 const carController = require('../controllers/carController');
 const upload = require('../utils/upload');
 
-// Add a New Car (Uploads images to Cloudinary)
+// Add a New Car
 router.post('/', upload.array('images', 5), carController.addCar);
 
-// Get All Cars
+// Get All Cars with Sorting
 router.get('/', carController.getAllCars);
 
 // Get Car by ID
 router.get('/:id', carController.getCarById);
 
-// Update Car by ID (Uploads new images to Cloudinary)
+// Update Car by ID
 router.put('/:id', upload.array('images', 5), carController.updateCar);
 
 // Delete Car by ID
