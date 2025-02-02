@@ -42,6 +42,13 @@ app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/bookings', bookingRoutes);
 
+app.use((err, req, res, next) => {
+  console.error('Global error handler:', err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error',
+  });
+});
+
 // Start the Server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

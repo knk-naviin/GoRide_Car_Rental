@@ -67,9 +67,16 @@ const getCarById = async (req, res) => {
   }
 };
 
-// Update Car by ID
+//update an car
+
 const updateCar = async (req, res) => {
   try {
+    // First, fetch the current car document from the DB
+    const car = await Car.findById(req.params.id);
+    if (!car) {
+      return res.status(404).json({ message: 'Car not found' });
+    }
+
     const {
       carName,
       rentPrice,
@@ -83,7 +90,14 @@ const updateCar = async (req, res) => {
       isAvailable,
     } = req.body;
 
-    const images = req.files ? req.files.map((file) => file.path) : undefined;
+    // Use the existing images from the DB if none are provided from the client
+    let images = req.body.existingImages || car.images;
+    
+    // If there are new images uploaded, append them
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map((file) => file.path);
+      images = [...images, ...newImages];
+    }
 
     const updatedCar = await Car.findByIdAndUpdate(
       req.params.id,
@@ -103,14 +117,12 @@ const updateCar = async (req, res) => {
       { new: true }
     );
 
-    if (!updatedCar) {
-      return res.status(404).json({ message: 'Car not found' });
-    }
     res.status(200).json(updatedCar);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Delete Car by ID
 const deleteCar = async (req, res) => {

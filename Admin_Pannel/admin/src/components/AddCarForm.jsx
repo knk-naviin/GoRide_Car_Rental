@@ -15,11 +15,41 @@ const AddCarForm = ({ onCarAdded }) => {
     images: [],
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await addCar(carData);
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     await addCar(carData);
+//     onCarAdded();
+//   };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Create a new FormData object
+  const formData = new FormData();
+
+  // Append all the fields to the FormData object
+  formData.append("carName", carData.carName);
+  formData.append("rentPrice", carData.rentPrice);
+  formData.append("kilometerPerDay", carData.kilometerPerDay);
+  formData.append("extraKmPrice", carData.extraKmPrice);
+  formData.append("extraHourPrice", carData.extraHourPrice);
+  formData.append("carType", carData.carType);
+  formData.append("seats", carData.seats);
+  formData.append("fuelType", carData.fuelType);
+  formData.append("transmissionType", carData.transmissionType);
+
+  // Append each image file
+  carData.images.forEach((image) => {
+    formData.append("images", image);
+  });
+
+  try {
+    await addCar(formData);
     onCarAdded();
-  };
+  } catch (error) {
+    console.error("Error adding car:", error);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="mb-4">
