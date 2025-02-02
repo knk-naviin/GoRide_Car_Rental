@@ -40,6 +40,32 @@ export const fetchUsers = async () => {
   return response.data;
 };
 
+
+export const fetchBookingsByUserId = async (userId) => {
+  const response = await axios.get(`${API_URL}/bookings/user/${userId}`);
+  return response.data;
+};
+
+export const fetchUserById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/users/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    throw error;
+  }
+};
+
+export const deleteUser = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/users/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw error;
+  }
+};
+
 export const fetchBookings = async () => {
   const response = await axios.get(`${API_URL}/bookings`);
   return response.data;
@@ -59,3 +85,5 @@ export const updateBookingStatus = async (id, status) => {
   const response = await axios.put(`${API_URL}/bookings/${id}`, { status });
   return response.data;
 };
+
+

@@ -5,17 +5,30 @@ import UpdateCar from "./components/UpdateCar";
 import CarDetails from "./components/CarDetails";
 import BookingsPage from "./pages/BookingsPage";
 import BookingDetails from "./components/BookingDetails";
+import UsersPage from "./pages/UsersPage";  // Import UsersPage
+import UserDetails from "./components/UserDetails";
+import AddCarForm from "./components/AddCarForm";
 
 const App = () => (
   <Router>
     <Navbar />
-    <Routes>
-      <Route path="/cars" element={<CarsPage />} />
-      <Route path="/cars/update/:id" element={<UpdateCar />} />
-      <Route path="/cars/:id" element={<CarDetails />} />
-      <Route path="/bookings" element={<BookingsPage />} />
-      <Route path="/bookings/:id" element={<BookingDetails />} />
-    </Routes>
+    <div className="container mt-4">
+      <Routes>
+        {/* Car Management */}
+        <Route path="/cars" element={<CarsPage />} />
+        <Route path="/cars/add" element={<AddCarForm />} /> {/* New route for adding a car */}
+        <Route path="/cars/update/:id" element={<UpdateCar />} />
+        <Route path="/cars/:id" element={<CarDetails />} />
+
+        {/* Booking Management */}
+        <Route path="/bookings" element={<BookingsPage />} />
+        <Route path="/bookings/:id" element={<BookingDetails />} />
+
+        {/* User Management */}
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="/users/:id" element={<UserDetails />} />
+      </Routes>
+    </div>
   </Router>
 );
 

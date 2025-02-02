@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { fetchBookingById } from "../api";
+import { fetchBookingById, updateBookingStatus } from "../api";
 import LoadingSpinner from "./LoadingSpinner";
 
 const BookingDetails = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [fullScreenImage, setFullScreenImage] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +24,38 @@ const BookingDetails = () => {
     fetchData();
   }, [id]);
 
+  const handleConfirm = async () => {
+    if (window.confirm("Are you sure you want to confirm this booking?")) {
+      try {
+        await updateBookingStatus(id, "confirmed");
+        setBooking({ ...booking, status: "confirmed" });
+      } catch (error) {
+        console.error("Error confirming booking:", error);
+      }
+    }
+  };
+
+  const calculateExpiry = () => {
+    const fromDate = new Date(booking.fromDate);
+    const toDate = new Date(booking.toDate);
+    const now = new Date();
+    const timeDiff = toDate - now;
+    if (timeDiff < 24 * 60 * 60 * 1000) {
+      return `${Math.ceil(timeDiff / (60 * 60 * 1000))} hours`;
+    }
+    return `${Math.ceil(timeDiff / (24 * 60 * 60 * 1000))} days`;
+  };
+
+  const handleImageClick = (img) => {
+    setFullScreenImage(img);
+    setIsFullScreen(true);
+  };
+
+  const closeFullScreen = () => {
+    setIsFullScreen(false);
+    setFullScreenImage(null);
+  };
+
   if (loading) return <LoadingSpinner />;
   if (!booking) return <p>Booking not found.</p>;
 
@@ -34,33 +68,32 @@ const BookingDetails = () => {
         <p><strong>Phone:</strong> {booking.phoneNumber}</p>
         <p><strong>Address:</strong> {booking.currentAddress}</p>
         <p><strong>Status:</strong> <span className={`badge bg-${booking.status === "confirmed" ? "success" : "warning"}`}>{booking.status}</span></p>
-        
+        <p><strong>Booking Expires In:</strong> <span className="text-danger">{calculateExpiry()}</span></p>
+        <button onClick={handleConfirm} className="btn btn-primary mt-2">
+          {booking.status === "confirmed" ? "Cancel Booking" : "Confirm Booking"}
+        </button>
+
         <h5 className="mt-4">Car Details</h5>
         <p><strong>Car Name:</strong> {booking.carId?.carName}</p>
         <p><strong>Rent Price:</strong> ${booking.carId?.rentPrice} per day</p>
-        <p><strong>Car Type:</strong> {booking.carId?.carType}</p>
-        <p><strong>Seats:</strong> {booking.carId?.seats}</p>
-        <p><strong>Fuel Type:</strong> {booking.carId?.fuelType}</p>
-        <p><strong>Transmission:</strong> {booking.carId?.transmissionType}</p>
         <div className="d-flex overflow-auto">
           {booking.carId?.images.map((img, index) => (
-            <img key={index} src={img} alt="Car" className="img-thumbnail me-2" width="150" />
+            <img key={index} src={img} alt="Car" className="img-thumbnail me-2" width="150" onClick={() => handleImageClick(img)} />
           ))}
         </div>
 
         <h5 className="mt-4">Documents</h5>
         <div className="d-flex flex-wrap">
-          <img src={booking.aadharFront} alt="Aadhar Front" className="img-thumbnail me-2 mb-2" width="150" />
-          <img src={booking.aadharBack} alt="Aadhar Back" className="img-thumbnail me-2 mb-2" width="150" />
-          <img src={booking.drivingLicenseFront} alt="License Front" className="img-thumbnail me-2 mb-2" width="150" />
-          <img src={booking.drivingLicenseBack} alt="License Back" className="img-thumbnail mb-2" width="150" />
+          {[booking.aadharFront, booking.aadharBack, booking.drivingLicenseFront, booking.drivingLicenseBack].map((img, index) => (
+            <img key={index} src={img} alt="Document" className="img-thumbnail me-2 mb-2" width="150" onClick={() => handleImageClick(img)} />
+          ))}
         </div>
-
-        <h5 className="mt-4">Booking Duration</h5>
-        <p><strong>From:</strong> {new Date(booking.fromDate).toLocaleDateString()}</p>
-        <p><strong>To:</strong> {new Date(booking.toDate).toLocaleDateString()}</p>
-        <p><strong>Total Days:</strong> {booking.totalDays}</p>
       </div>
+      {isFullScreen && (
+        <div className="fullscreen-overlay" onClick={closeFullScreen}>
+          <img src={fullScreenImage} alt="Full Screen" className="fullscreen-image" />
+        </div>
+      )}
     </div>
   );
 };

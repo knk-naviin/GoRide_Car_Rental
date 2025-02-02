@@ -125,10 +125,24 @@ const deleteBooking = async (req, res) => {
   }
 };
 
+const getBookingsByUserId = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ userId: req.params.userId });
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ message: "No bookings found for this user" });
+    }
+    res.status(200).json(bookings);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 module.exports = {
   createBooking,
   getAllBookings,
   getBookingById,
   updateBookingStatus,
   deleteBooking,
+  getBookingsByUserId
 };

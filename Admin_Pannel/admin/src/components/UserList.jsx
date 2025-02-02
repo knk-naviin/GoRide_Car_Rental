@@ -1,21 +1,41 @@
 import { useState, useEffect } from "react";
-import { fetchUsers } from "../api";
+import { fetchUsers, deleteUser } from "../api";
+import { Link } from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(null);
 
   const fetchData = async () => {
-    setLoading(true);
-    const data = await fetchUsers();
-    setUsers(data);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const data = await fetchUsers();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    try {
+      setDeleting(id);
+      await deleteUser(id);
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   if (loading) return <LoadingSpinner />;
 
@@ -25,18 +45,38 @@ const UserList = () => {
       <button onClick={fetchData} className="btn btn-primary mb-4">
         Refresh List
       </button>
-      <div className="row">
+      <ul className="list-group">
         {users.map((user) => (
-          <div key={user._id} className="col-md-4 mb-4">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">{user.name}</h5>
-                <p className="card-text">Email: {user.email}</p>
-              </div>
+          <li
+            key={user._id}
+            className="list-group-item d-flex justify-content-between align-items-center"
+          >
+            <div>
+              <h5 className="mb-1">{user.name}</h5>
+              <p className="mb-0">Email: {user.email}</p>
             </div>
-          </div>
+            <div>
+              <Link
+                to={`/users/${user._id}`}
+                className="btn btn-info btn-sm me-2"
+              >
+                View Details
+              </Link>
+              <button
+                onClick={() => handleDelete(user._id)}
+                className="btn btn-danger btn-sm"
+                disabled={deleting === user._id}
+              >
+                {deleting === user._id ? (
+                  <span className="spinner-border spinner-border-sm"></span>
+                ) : (
+                  "Delete"
+                )}
+              </button>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };

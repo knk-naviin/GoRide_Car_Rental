@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { fetchCars, deleteCar, updateCar } from "../api";
 import LoadingSpinner from "./LoadingSpinner";
-import AddCarForm from "./AddCarForm";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min"; // Enable swipe
+import "bootstrap/dist/js/bootstrap.bundle.min"; // Enable Bootstrap JS features
 
 const CarList = () => {
   const [cars, setCars] = useState([]);
@@ -41,7 +40,11 @@ const CarList = () => {
     try {
       const updatedCar = { ...car, isAvailable: !car.isAvailable };
       await updateCar(car._id, updatedCar);
-      setCars((prevCars) => prevCars.map((c) => (c._id === car._id ? { ...c, isAvailable: updatedCar.isAvailable } : c)));
+      setCars((prevCars) =>
+        prevCars.map((c) =>
+          c._id === car._id ? { ...c, isAvailable: updatedCar.isAvailable } : c
+        )
+      );
     } catch (error) {
       console.error("Error updating car availability:", error);
     }
@@ -51,48 +54,88 @@ const CarList = () => {
 
   return (
     <div className="container">
-      <h1 className="my-4">Cars</h1>
+      {/* Header with title and Add New Car button */}
+      <div className="d-flex justify-content-between align-items-center my-4">
+        <h1>Cars</h1>
+        <Link to="/cars/add" className="btn btn-success">
+          Add New Car
+        </Link>
+      </div>
+
       <button onClick={fetchData} className="btn btn-primary mb-4">
         Refresh List
       </button>
-      <AddCarForm onCarAdded={fetchData} />
+
       <div className="row">
-        {cars.map((car) => (
-          <div key={car._id} className="col-md-4 mb-4">
-            <Link to={`/cars/${car._id}`} className="text-decoration-none text-dark">
-              <div className="card">
-                <div id={`carousel-${car._id}`} className="carousel slide" data-bs-ride="carousel">
-                  <div className="carousel-inner">
-                    {car.images && car.images.map((img, index) => (
-                      <div key={index} className={`carousel-item ${index === 0 ? "active" : ""}`}>
-                        <img src={img} className="d-block w-100" alt={car.carName} />
-                      </div>
-                    ))}
+        {cars.length === 0 ? (
+          <p>No car found.</p>
+        ) : (
+          cars.map((car) => (
+            <div key={car._id} className="col-md-4 mb-4">
+              <Link
+                to={`/cars/${car._id}`}
+                className="text-decoration-none text-dark"
+              >
+                <div className="card">
+                  <div
+                    id={`carousel-${car._id}`}
+                    className="carousel slide"
+                    data-bs-ride="carousel"
+                  >
+                    <div className="carousel-inner">
+                      {car.images &&
+                        car.images.map((img, index) => (
+                          <div
+                            key={index}
+                            className={`carousel-item ${
+                              index === 0 ? "active" : ""
+                            }`}
+                          >
+                            <img
+                              src={img}
+                              className="d-block w-100"
+                              alt={car.carName}
+                            />
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                  <div className="card-body">
+                    <h5 className="card-title">{car.carName}</h5>
+                    <p className="card-text">Rent Price: ${car.rentPrice}</p>
                   </div>
                 </div>
-                <div className="card-body">
-                  <h5 className="card-title">{car.carName}</h5>
-                  <p className="card-text">Rent Price: ${car.rentPrice}</p>
-                </div>
+              </Link>
+
+              <div className="form-check form-switch mt-2">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  checked={car.isAvailable}
+                  onChange={() => toggleAvailability(car)}
+                />
+                <label className="form-check-label">
+                  {car.isAvailable ? "Available" : "Not Available"}
+                </label>
               </div>
-            </Link>
-            <div className="form-check form-switch mt-2">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                checked={car.isAvailable}
-                onChange={() => toggleAvailability(car)}
-              />
-              <label className="form-check-label">
-                {car.isAvailable ? "Available" : "Not Available"}
-              </label>
+
+              <div className="mt-3">
+                <Link
+                  to={`/cars/update/${car._id}`}
+                  className="btn btn-warning me-2"
+                >
+                  Edit
+                </Link>
+                <button
+                  onClick={() => handleDeleteCar(car._id)}
+                  className="btn btn-danger"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-            <div className="mt-3">
-              <Link to={`/cars/update/${car._id}`} className="btn btn-warning me-2">Edit</Link>
-              <button onClick={() => handleDeleteCar(car._id)} className="btn btn-danger">Delete</button>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
