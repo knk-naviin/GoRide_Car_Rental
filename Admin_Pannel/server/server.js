@@ -10,6 +10,8 @@ const authRoutes = require('./app/routes/authRoutes');
 const bookingRoutes = require('./app/routes/bookingRoutes');
 const db = require('./config/db');
 require('dotenv').config();
+const adminRoutes = require('./app/routes/adminRoutes');
+
 require('./config/passport'); // Load Passport configuration
 
 const app = express();
@@ -29,6 +31,7 @@ app.use(
   })
 );
 
+
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
@@ -41,9 +44,15 @@ app.use('/cars', carRoutes);
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/bookings', bookingRoutes);
+app.use('/admin', adminRoutes);
+
+app.use((req, res, next) => {
+  res.removeHeader("Cross-Origin-Opener-Policy");
+  res.removeHeader("Cross-Origin-Embedder-Policy");
+  next();
+});
 
 app.use((err, req, res, next) => {
-  console.error('Global error handler:', err);
   res.status(err.status || 500).json({
     error: err.message || 'Internal Server Error',
   });

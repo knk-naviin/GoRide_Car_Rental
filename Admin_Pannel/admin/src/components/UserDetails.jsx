@@ -10,37 +10,38 @@ const UserDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      // Fetch user details
-      const userData = await fetchUserById(id);
+const fetchData = async () => {
+  try {
+    setLoading(true);
+    setError(null);
 
-      // Fetch user bookings.
-      // If the endpoint returns 404 (no bookings found), set bookings to an empty array.
-      let userBookings = [];
+    // Fetch user details
+    const userData = await fetchUserById(id);
+    setUser(userData);
+
+    // ✅ Fetch bookings using `user._id`, NOT `googleId`
+    let userBookings = [];
+    if (userData._id) {
       try {
-        userBookings = await fetchBookingsByUserId(id);
+        userBookings = await fetchBookingsByUserId(userData._id);
       } catch (err) {
         if (err.response && err.response.status === 404) {
-          // No bookings found for this user.
           userBookings = [];
         } else {
-          // Re-throw any other errors.
           throw err;
         }
       }
-
-      setUser(userData);
-      setBookings(userBookings);
-    } catch (err) {
-      console.error("Error fetching user details:", err);
-      setError(err);
-    } finally {
-      setLoading(false);
     }
-  };
+
+    setBookings(userBookings);
+  } catch (err) {
+    console.error("❌ Error fetching user details:", err);
+    setError(err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchData();

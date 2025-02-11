@@ -3,7 +3,7 @@ const router = express.Router();
 const bookingController = require('../controllers/bookingController');
 const upload = require('../utils/upload');
 
-// Create a Booking
+// ✅ Create a Booking (Now Uses `userId` instead of `googleId`)
 router.post(
   '/',
   upload.fields([
@@ -15,19 +15,21 @@ router.post(
   bookingController.createBooking
 );
 
-// Get All Bookings
+// ✅ Get ALL Bookings (For Admins)
 router.get('/', bookingController.getAllBookings);
 
-// Get Booking by ID
-router.get('/:id', bookingController.getBookingById);
+// ✅ Get Booking by Booking ID
+router.get('/booking/:id', bookingController.getBookingById);
 
-// Update Booking Status
+// ✅ Get Bookings by User ID
+router.get('/user/:id', bookingController.getBookingsByUserId);
+
+// ✅ Update Booking Status (Pending → Confirmed)
 router.put('/:id', bookingController.updateBookingStatus);
 
-// Delete Booking
+// ✅ Delete a Booking
 router.delete('/:id', bookingController.deleteBooking);
 
-router.get('/user/:userId', bookingController.getBookingsByUserId);
 
 
 module.exports = router;

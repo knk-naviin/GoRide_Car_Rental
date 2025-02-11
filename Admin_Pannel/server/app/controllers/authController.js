@@ -1,28 +1,45 @@
-const User = require('../models/User');
-const { verifyGoogleToken } = require('../utils/auth');
+const { OAuth2Client } = require("google-auth-library");
+const User = require("../models/User");
+require("dotenv").config();
 
-// Google Sign-In
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 const googleSignIn = async (req, res) => {
   try {
     const { token } = req.body;
-    const payload = await verifyGoogleToken(token);
 
-    let user = await User.findOne({ googleId: payload.sub });
+    if (!token) {
+      return res.status(400).json({ error: "Google token is required." });
+    }
+
+    // ✅ Verify Google Token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const { sub: googleId, name, email } = ticket.getPayload();
+
+    if (!googleId || !email || !name) {
+      return res.status(400).json({ error: "Invalid Google token payload." });
+    }
+
+    console.log("✅ Google Token Verified:", { googleId, name, email });
+
+    // ✅ Check if user exists, otherwise create a new user
+    let user = await User.findOne({ googleId });
+
     if (!user) {
-      user = new User({
-        googleId: payload.sub,
-        name: payload.name,
-        email: payload.email,
-      });
+      user = new User({ googleId, name, email });
       await user.save();
     }
 
-    res.status(200).json(user);
+    return res.status(200).json(user);
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("❌ Error in Google Sign-In:", error);
+    return res.status(500).json({ error: error.message || "Internal Server Error" });
   }
 };
 
-module.exports = {
-  googleSignIn,
-};
+module.exports = { googleSignIn };
