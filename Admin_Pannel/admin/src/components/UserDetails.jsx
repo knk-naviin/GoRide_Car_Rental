@@ -10,7 +10,7 @@ const UserDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-const fetchData = async () => {
+  const fetchData = async () => {
   try {
     setLoading(true);
     setError(null);

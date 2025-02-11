@@ -40,29 +40,6 @@ export const fetchUsers = async () => {
 
 
 
-
-
-// export const fetchBookingById = async (id) => {
-//   if (!id) {
-//     console.error("❌ Error: Booking ID is missing in API call.");
-//     throw new Error("Booking ID is required.");
-//   }
-
-//   try {
-//     const response = await axios.get(`http://localhost:8000/bookings/${id}`);
-
-//     if (!response.data) {
-//       throw new Error("❌ Booking not found.");
-//     }
-
-//     return response.data;
-//   } catch (error) {
-//     console.error("❌ Error fetching booking:", error);
-//     throw error;
-//   }
-// };
-
-
 export const fetchBookings = async () => {
   try {
     const user = JSON.parse(localStorage.getItem("user")); // Fetch user from local storage
@@ -105,53 +82,6 @@ export const deleteUser = async (id) => {
   }
 };
 
-// export const fetchBookings = async (googleId) => {
-//   try {
-//     const response = await fetch(`${API_URL}/bookings`, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         // Include the googleId in the header so backend middleware can use it.
-//         "googleid": googleId,
-//       },
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("❌ User not found. Please sign in.");
-//     }
-
-//     return await response.json();
-//   } catch (error) {
-//     console.error("❌ Error fetching bookings:", error);
-//     throw error;
-//   }
-// };
-
-// export const fetchBookings = async () => {
-//   try {
-//     const storedUser = JSON.parse(localStorage.getItem("user"));
-
-//     if (!storedUser || !storedUser.googleId) {
-//       throw new Error("❌ User not found. Please sign in.");
-//     }
-
-//     console.log("📤 Fetching bookings for Admin:", storedUser.googleId);
-
-//     const response = await axios.get(`${API_URL}/bookings`, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Google-ID": storedUser.googleId, // Send Google ID in headers
-//       },
-//     });
-
-//     console.log("✅ Received Bookings:", response.data);
-//     return response.data;
-//   } catch (error) {
-//     console.error("❌ Error fetching bookings:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
-
 
 export const updateBookingStatus = async (bookingId, status) => {
   try {
@@ -174,29 +104,6 @@ export const updateBookingStatus = async (bookingId, status) => {
   }
 };
 
-
-
-// export const updateBookingStatus = async (id, status) => {
-//   try {
-//     const user = JSON.parse(localStorage.getItem("user")); // Get user from local storage
-//     if (!user || !user.googleId) {
-//       throw new Error("User is not authenticated.");
-//     }
-
-//     console.log("📤 Sending booking confirmation request with Google ID:", user.googleId);
-
-//     const response = await axios.put(
-//       `http://localhost:8000/bookings/${id}`,
-//       { status, googleId: user.googleId },  // Ensure googleId is sent
-//       { headers: { "Content-Type": "application/json" } }
-//     );
-
-//     return response.data;
-//   } catch (error) {
-//     console.error("❌ Error updating booking status:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
 
 
 export const deleteBooking = async (id) => {
@@ -225,20 +132,6 @@ export const deleteBooking = async (id) => {
 };
 
 
-// export const fetchBookingById = async (id) => {
-//   try {
-//     console.log("📤 Fetching Booking with ID:", id);
-    
-//     const response = await axios.get(`http://localhost:8000/bookings/${id}`);
-//     console.log("✅ Booking Details Received:", response.data);
-
-//     return response.data;
-//   } catch (error) {
-//     console.error("❌ Error fetching booking:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
-
 
 
 export const fetchBookingById = async (id) => {
@@ -252,31 +145,6 @@ export const fetchBookingById = async (id) => {
 };
 
 
-
-// export const fetchBookingsByUserId = async (userId) => {
-//   try {
-//     const storedUser = JSON.parse(localStorage.getItem("user"));
-
-//     if (!storedUser || !storedUser._id) {
-//       throw new Error("❌ User not found. Please sign in.");
-//     }
-
-//     console.log("📤 Fetching bookings for User ID:", storedUser._id);
-
-//     const response = await axios.get(`${API_URL}/bookings/user/${storedUser._id}`, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Google-ID": storedUser.googleId, // Ensure Google ID is sent
-//       },
-//     });
-
-//     console.log("✅ User Bookings Fetched:", response.data);
-//     return response.data;
-//   } catch (error) {
-//     console.error("❌ Error fetching user bookings:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
 
 export const fetchBookingsByUserId = async (userId) => {
   try {
